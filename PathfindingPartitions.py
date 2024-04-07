@@ -73,4 +73,65 @@
 # Maybe just test with inside-script testCases to start? 
 
 
+# 7 April Version only works for very small partitions, any larger partitions, it breaks 
+
+# it also doesn't order outputted transformations correctly, ie [2 2] to [1 1 1 1] example 
+# Must find a way to explore the least possible moves, then the next least possible moves etc, 
+# Breadth-First-Search? over Depth First Search? 
+# BFS to find shortest partition path rather than starting at longest like DFS? 
+# BFS gurantees that the first time a node (final partition) is seen,
+# it is encountered with the shortest path possible from the source (initial partition) 
+# BFS: represent partitions as nodes. 
+# Explore all nodes (partitions) at the present depth, then move onto the nodes at the next depth level, 
+# so, the least moves partition nodes will be found first, and if there aren't any, then more move requiring nodes are explored 
+# Implementing BFS for a partition pathfinding context:
+# 
+#
+#
+
+def LeastMoves(initialPartition, finalPartition):
+    from collections import Counter 
+
+    if sum(initialPartition) != sum(finalPartition):
+        return None
+    initialPartitionCounter = Counter(initialPartition)
+    finalPartitionCounter = Counter(finalPartition) 
+
+    # No moves needed as partitions already same
+    if initialPartitionCounter == finalPartitionCounter:
+        moves = 0
+        partitionPhases = [] 
+    elif len(initialPartition) > len(finalPartition):
+        moves = 1
+        partitionPhases = [initialPartition, finalPartition] 
+    else: 
+        moves = 0 
+        partitionPhases = [initialPartition]
+        currentPartition = initialPartition[:] # vopy
+        
+        while Counter(currentPartition) != finalPartitionCounter:
+
+            for i in range(len(currentPartition)):
+                
+                if currentPartition[i] > 1: 
+
+                    currentPartition.append(1) 
+                    currentPartition[i] -= 1
+                    moves +=1 
+                    partitionPhases.append(currentPartition[:]) # copy of currentpartition into storage of transformations / phases toward goal partition
+                    break 
+            if Counter(currentPartition) == finalPartitionCounter:
+                break 
+    return moves, partitionPhases
+
+test = [([1,1,1],[3]),([2, 2],[1,1,1,1]),([])]
+
+# loop over and print phases and moves for ea test 
+for initialPartition, finalPartition in test:
+    moves, partitionPhases = LeastMoves(initialPartition,finalPartition)
+    print('# Moves required: ', moves)
+    for phase in partitionPhases: 
+        print(phase)
+    print('--------')
+
 
