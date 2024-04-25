@@ -17,6 +17,41 @@
 # read in scenarios and call BFS on each scenario, within BFS is calls to performMove 
 
 import sys 
+from collections import deque 
+
+def main(): 
+
+    scenarios = ReadScenarios()
+    totalScenarios = len(scenarios)
+
+    for i, scenario in enumerate(scenarios):
+
+        if len(scenario)==2: 
+
+            initialPartition, finalPartition = map(lambda x: list(map(int, x.split())), scenario)
+            shortestPath = BFS(initialPartition, finalPartition)
+
+            if shortestPath is not None: 
+                # initial partition included so -1 
+                print("# Moves required:", len(shortestPath) - 1) 
+
+                for partition in shortestPath:
+                    PrintPartition(partition)
+
+            else:
+
+                print("# No solution possible")
+                PrintPartition(initialPartition)
+                PrintPartition(finalPartition)
+
+        else:
+            #  invalid or commentonly scenarios
+            for line in scenario:
+                print(line)
+
+        # Print separator lines except for the last scenario
+        if i < totalScenarios - 1:
+            print("--------") 
 
 def PerformMove(partition, columnIndex):
     
@@ -50,6 +85,32 @@ def PerformMove(partition, columnIndex):
         # If column empty no move is made so return original partition without zeros
         return [x for x in partition if x > 0]
 
+# BFS to explore all possible partitions, finding the shortest path. 
+def BFS(initial,final):
+
+    toVisit = deque() 
+    visited = set()
+
+    # initially append starting partition to the move sequence to start 
+    toVisit.append((initial, [initial]))
+
+    while toVisit:
+
+        currentPartition, moves = toVisit.popleft()
+
+        if currentPartition == final:
+            return moves
+        
+        for columnIndex in range(1, max(currentPartition) + 1):
+
+            newPartition = PerformMove(currentPartition, columnIndex)
+
+            if tuple(newPartition) not in visited: 
+                visited.add(tuple(newPartition))
+                toVisit.append((newPartition, moves + [newPartition]))
+    # if no solution is found 
+    return None
+
 
 # read scenarios from stdin 
 def ReadScenarios(): 
@@ -78,6 +139,8 @@ def ReadScenarios():
     return scenarios 
 
 
+def PrintPartition(partition):
+    print(' '.join(map(str, partition)))
 
 
 # ParsingPartitions rules 

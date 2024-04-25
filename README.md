@@ -1,6 +1,8 @@
 # Etude5
 
-To run my code: 
+My final PathfindingPartitions program is within PathfindingPartitions.py file. 
 
+To compile and run my program enter: 
 
-blaj blah 
+python3 PathfindingPartitions.py < testFileName.txt 
+
