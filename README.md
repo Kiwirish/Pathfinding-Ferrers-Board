@@ -1,4 +1,4 @@
-# Pathfinding Ferrers Board Game 
+# Pathfinding Shortest Path to target Ferrers Board / Partition.
 
 ### Project focused on pathfinding within partitions represented by Ferrers boards. 
 ### This explores the shortest path from an initial partition to a goal partition using Breadth-First-Search algorithms to efficiently navigate this path and perform moves toward the goal partition. 
